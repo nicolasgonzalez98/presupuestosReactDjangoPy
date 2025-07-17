@@ -1,0 +1,35 @@
+# Entornos virtuales
+env/
+venv/
+ENV/
+.venv/
+
+# Archivos de Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de bases de datos
+*.sqlite3
+
+# Configuración de VS Code
+.vscode/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de log
+*.log
+
+# Archivos de migraciones si querés ignorarlos (opcional)
+# **Esto es debatible, en proyectos reales es mejor subirlos**
+# presupuesto/migrations/
+
+# Archivos de compilación
+*.egg-info/
+*.bak
+*.swp
+
+# Archivos de configuración local
+.env
