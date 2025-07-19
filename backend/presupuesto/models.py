@@ -20,6 +20,7 @@ class Transaction(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=255, blank=True)
     date = models.DateField()
+    archivado = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
