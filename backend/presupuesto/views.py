@@ -12,6 +12,37 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
+# presupuesto/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
+from django.contrib.auth.password_validation import validate_password
+from rest_framework.exceptions import ValidationError
+
+class RegisterAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username")
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        if User.objects.filter(username=username).exists():
+            return Response({"error": "El usuario ya existe"}, status=400)
+
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            return Response({"error": e.messages}, status=400)
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.is_active = True 
+        user.save()
+        return Response({"message": "Usuario creado exitosamente"}, status=status.HTTP_201_CREATED)
+
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
