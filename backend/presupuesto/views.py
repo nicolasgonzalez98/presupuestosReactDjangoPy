@@ -11,6 +11,8 @@ from collections import defaultdict
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import EmailTokenObtainPairSerializer, UserSerializer
 
 # presupuesto/views.py
 from rest_framework.views import APIView
@@ -29,7 +31,7 @@ class RegisterAPIView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(email=email).exists():
             return Response({"error": "El usuario ya existe"}, status=400)
 
         try:
@@ -43,6 +45,12 @@ class RegisterAPIView(APIView):
         return Response({"message": "Usuario creado exitosamente"}, status=status.HTTP_201_CREATED)
 
 
+class GetUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -98,3 +106,6 @@ class EstadisticasTransaccionesAPIView(APIView):
             "saldo": saldo,
             "por_categoria": por_categoria
         })
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainPairSerializer
