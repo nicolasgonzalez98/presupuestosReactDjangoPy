@@ -4,7 +4,7 @@ import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { useNavigate } from "react-router-dom";
-
+import axiosAuth from "../../axiosAuth";
 
 const Register = () => {
 
@@ -37,38 +37,38 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+      e.preventDefault();
+      const validationErrors = validate();
 
-    setErrors({});
-    fetch("http://localhost:8000/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: form.name, // nombre va como username
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+
+      setErrors({});
+
+      try {
+        await axiosAuth.post("/register", {
+          username: form.name, 
           email: form.email,
           password: form.password,
-        }),
-    })
-    .then((res) => {
-        if (res.ok) {
-          navigate("/login");
+        });
+
+        navigate("/login?exito=1");
+      } catch (error) {
+        if (error.response?.data) {
+          const data = error.response.data;
+          // Podés mapear los errores si vienen como { email: ["..."], password: ["..."] }
+          const formattedErrors = {};
+          for (let key in data) {
+            formattedErrors[key] = Array.isArray(data[key]) ? data[key][0] : data[key];
+          }
+          setErrors(formattedErrors);
         } else {
-          return res.json().then((data) => {
-            throw new Error(data.message || "Error al registrar");
-          });
+          console.error("Error:", error.message);
         }
-      })
-    .catch((err) => {
-        console.error("Error:", err.message);
-    });
-  };
+      }
+    };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-teal-100 px-4">
