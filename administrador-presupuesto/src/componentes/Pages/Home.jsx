@@ -149,8 +149,9 @@ const Home = () => {
                     <p className="text-sm text-gray-800">{mov.description}</p>
                     <p className="text-xs text-gray-500">{mov.date}</p>
                   </div>
-                  <div className={`font-semibold ${mov.tipo === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
-                    {mov.tipo === 'INCOME' ? '+' : '-'}${mov.amount.toLocaleString()}
+                  
+                  <div className={`font-semibold ${mov.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
+                    {mov.type === 'INCOME' ? '+' : '-'}${mov.amount.toLocaleString()}
                   </div>
                 </li>
               ))}
